@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { StorageService } from './storage.service';
+import { Role } from '../models/roles';
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +12,7 @@ export class AuthService {
     /** This is for localStorage so it knows which key to use to access all users */
     private usersKey = 'users';
 
-    /** Initializes superuser when it first runs */
+    /** Initializes superuser when it first loads */
     constructor(private storage: StorageService) {
         this.seedSuperUser();
     }
@@ -52,7 +53,7 @@ export class AuthService {
     }
 
     /** Check role */
-    hasRole(role: string): boolean {
+    hasRole(role: Role): boolean {
         return this.currentUser?.roles.includes(role) || false;
     }
 

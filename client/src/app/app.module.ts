@@ -7,9 +7,10 @@ import { LoginComponent } from './login/login.component';
 
 // What I've personally imported starts here
 import { FormsModule } from '@angular/forms';
+import { GroupListComponent } from './group/group-list/group-list.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent, LoginComponent, GroupListComponent],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
   bootstrap: [AppComponent],
