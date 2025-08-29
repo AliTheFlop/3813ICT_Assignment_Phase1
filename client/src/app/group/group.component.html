@@ -1,12 +1,19 @@
 <div class="group-container">
-    <nav class="channel-sidebar">
-        <h3>Channels for {{ groupName }}</h3>
-        <ul>
-            <a>Hi</a>
-        </ul>
-    </nav>
+  <nav class="channel-sidebar">
+    <h3>Welcome to {{ groupName }}</h3>
+    <ul>
+      <li *ngFor="let channel of channels">
+        <a
+          [routerLink]="['/dashboard', 'group', groupId, 'channel', channel.id]"
+          routerLinkActive="active-link"
+        >
+          {{ channel.name }}
+        </a>
+      </li>
+    </ul>
+  </nav>
 
-    <div class="channel-content">
-        <router-outlet></router-outlet>
-    </div>
+  <div class="channel-content">
+    <router-outlet></router-outlet>
+  </div>
 </div>
