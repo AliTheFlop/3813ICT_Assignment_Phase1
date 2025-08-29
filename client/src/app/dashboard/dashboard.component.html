@@ -1,0 +1,19 @@
+<div class="dashboard-container">
+    <aside class="group-sidebar">
+        <h2>Groups</h2>
+        <ul>
+            <li *ngFor="let group of groups">
+                <a
+                    [routerLink]="['/dashboard', 'group', group.id]"
+                    routerLinkActive="active-link"
+                >
+                    {{ group.name }}
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <router-outlet></router-outlet>
+    </main>
+</div>
