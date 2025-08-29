@@ -1,16 +1,64 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
 import { Group } from '../models/group.model';
+import { ChannelService } from './channels.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class GroupService {
-    groupsKey: string = 'group';
+    groupsKey: string = 'groups';
     userId?: number;
 
-    constructor(private storage: StorageService) {
-        this.getGroups();
+    constructor(
+        private storage: StorageService,
+        private channelService: ChannelService
+    ) {
+        this.seedInitialGroups();
+    }
+
+    private seedInitialGroups(): void {
+        const groups = this.storage.load<Group[]>(this.groupsKey);
+        if (!groups || groups.length === 0) {
+            const initialGroups: Group[] = [
+                {
+                    id: 1,
+                    name: 'General',
+                    ownerUserId: 1,
+                    adminUserIds: [1],
+                    memberUserIds: [1],
+                    channelIds: [],
+                    joinRequests: [],
+                },
+                {
+                    id: 2,
+                    name: 'Engineering',
+                    ownerUserId: 1,
+                    adminUserIds: [1],
+                    memberUserIds: [1],
+                    channelIds: [],
+                    joinRequests: [],
+                },
+                {
+                    id: 3,
+                    name: 'Marketing',
+                    ownerUserId: 1,
+                    adminUserIds: [1],
+                    memberUserIds: [1],
+                    channelIds: [],
+                    joinRequests: [],
+                },
+            ];
+
+            const allChannels = this.channelService.getChannels();
+            initialGroups.forEach((group) => {
+                group.channelIds = allChannels
+                    .filter((c) => c.groupId === group.id)
+                    .map((c) => c.id);
+            });
+
+            this.storage.save(this.groupsKey, initialGroups);
+        }
     }
 
     getGroups(): Group[] {
