@@ -18,7 +18,7 @@ const routes: Routes = [
                 pathMatch: 'full',
             },
             {
-                path: 'groups/:groupId',
+                path: 'group/:groupId',
                 component: GroupComponent,
                 children: [
                     {
