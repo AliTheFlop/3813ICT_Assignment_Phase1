@@ -1,19 +1,75 @@
-<div class="dashboard-container">
-    <aside class="group-sidebar">
-        <h2>Groups</h2>
-        <ul>
-            <li *ngFor="let group of groups">
-                <a
-                    [routerLink]="['/dashboard', 'group', group.id]"
-                    routerLinkActive="active-link"
-                >
-                    {{ group.name }}
-                </a>
+<div class="container-fluid py-3">
+  <!-- Top bar -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h4 mb-0 fw-semibold">Your Workspace</h2>
+    <button
+      class="btn btn-outline-secondary btn-sm d-md-none"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#groupsOffcanvas"
+    >
+      <i class="bi bi-people"></i> Groups
+    </button>
+  </div>
+
+  <div class="row g-3">
+    <!-- Sidebar: Groups (desktop) -->
+    <aside class="col-md-3 col-lg-2 d-none d-md-block">
+      <div class="card shadow-sm border-0 sticky-top">
+        <div class="card-body p-0">
+          <div class="px-3 py-2 border-bottom">
+            <h3 class="h6 text-uppercase text-muted mb-0">Groups</h3>
+          </div>
+          <ul class="list-group list-group-flush small">
+            <li class="list-group-item px-3 py-2" *ngFor="let group of groups">
+              <a
+                class="d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
+                [routerLink]="['/dashboard', 'group', group.id]"
+                routerLinkActive="active"
+              >
+                <i class="bi bi-collection-play"></i>
+                <span class="text-truncate">{{ group.name }}</span>
+              </a>
             </li>
-        </ul>
+          </ul>
+        </div>
+      </div>
     </aside>
 
-    <main class="main-content">
-        <router-outlet></router-outlet>
+    <!-- Main -->
+    <main class="col-12 col-md-9 col-lg-10">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
     </main>
+  </div>
+</div>
+
+<!-- Offcanvas: Groups (mobile) -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="groupsOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Groups</h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item" *ngFor="let group of groups">
+        <a
+          class="d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
+          [routerLink]="['/dashboard', 'group', group.id]"
+          routerLinkActive="active"
+          data-bs-dismiss="offcanvas"
+        >
+          <i class="bi bi-collection-play"></i>
+          <span class="text-truncate">{{ group.name }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>

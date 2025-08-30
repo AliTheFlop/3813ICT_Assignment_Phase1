@@ -1,1 +1,54 @@
-<p>channel works!</p>
+<div class="container-fluid p-0 d-flex flex-column min-vh-100">
+  <!-- Header -->
+  <header class="border-bottom d-flex align-items-center gap-2">
+    <h1 class="h5 mb-0 d-flex align-items-center gap-2">
+      <i class="bi bi-hash"></i>
+      <span class="text-truncate">{{ channelName || "Channel" }}</span>
+    </h1>
+  </header>
+
+  <!-- Messages area -->
+  <section class="flex-grow-1 overflow-auto px-3 py-3">
+    <!-- START: your messages loop -->
+    <!-- *ngFor="let msg of messages; trackBy: trackById" -->
+    <!-- Render each message here -->
+    <!-- END: your messages loop -->
+  </section>
+
+  <!-- Composer (sticky at bottom) -->
+  <form
+    class="border-top bg-body px-2 px-md-3 py-2 position-sticky bottom-0"
+    (ngSubmit)="send()"
+    #composerForm="ngForm"
+  >
+    <div class="container-fluid px-0">
+      <div class="row g-2 align-items-end">
+        <div class="col">
+          <textarea
+            class="form-control"
+            [(ngModel)]="draft"
+            name="draft"
+            placeholder="Write a message…"
+            rows="1"
+            (keydown.enter)="onEnter($event)"
+            aria-label="Message input"
+          ></textarea>
+          <div class="form-text d-none d-sm-block">
+            Enter to send • Shift+Enter for new line
+          </div>
+        </div>
+        <div class="col-auto">
+          <button
+            class="btn btn-primary d-flex align-items-center gap-2"
+            type="submit"
+            [disabled]="!draft?.trim()"
+            aria-label="Send message"
+          >
+            <i class="bi bi-send"></i>
+            <span class="d-none d-sm-inline">Send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

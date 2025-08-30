@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GroupComponent } from './group/group.component';
 import { ChannelComponent } from './channel/channel.component';
+import { MessageComponent } from './message/message.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,12 @@ const routes: Routes = [
           {
             path: 'channels/:channelId',
             component: ChannelComponent,
+            children: [
+              {
+                path: 'messages',
+                component: MessageComponent,
+              },
+            ],
           },
         ],
       },

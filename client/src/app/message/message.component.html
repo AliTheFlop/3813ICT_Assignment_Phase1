@@ -1,0 +1,55 @@
+<!-- Root row: flip alignment by owner -->
+<div class="d-flex mb-3" [class.justify-content-end]="message.isMine">
+  <!-- Avatar (hidden for mine to keep edges clean) -->
+  <img
+    *ngIf="!message.isMine"
+    [src]="message.avatarUrl || 'https://via.placeholder.com/32'"
+    class="rounded-circle me-2 flex-shrink-0"
+    width="32"
+    height="32"
+    alt="{{ message.authorName }}"
+  />
+
+  <!-- Bubble + Meta -->
+  <div
+    class="d-flex flex-column align-items-start"
+    [class.align-items-end]="message.isMine"
+    style="min-width: 0"
+  >
+    <!-- Name + time (name hidden for mine; time always visible) -->
+    <div
+      class="small text-body-secondary mb-1 w-100 d-flex"
+      [class.flex-row-reverse]="message.isMine"
+    >
+      <span *ngIf="!message.isMine" class="text-truncate">{{
+        message.authorName
+      }}</span>
+      <span class="ms-auto" [class.me-auto]="message.isMine">
+        {{ message.createdAt | date : "shortTime" }}
+      </span>
+    </div>
+
+    <!-- Message bubble -->
+    <div
+      class="p-2 rounded-3"
+      [class.bg-primary]="message.isMine"
+      [class.text-white]="message.isMine"
+      [class.bg-body-secondary]="!message.isMine"
+      style="max-width: min(620px, 90vw)"
+    >
+      <div class="message-text">{{ message.text }}</div>
+
+      <!-- Meta row inside bubble: edited + status -->
+      <div class="d-flex align-items-center gap-2 mt-1 small opacity-75">
+        <span *ngIf="message.edited">(edited)</span>
+        <ng-container *ngIf="statusIcon(message.status) as s">
+          <i class="bi" [ngClass]="s.icon" aria-hidden="true"></i>
+          <span class="visually-hidden">{{ s.label }}</span>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacer on right for mine (keeps edges balanced) -->
+  <div *ngIf="message.isMine" class="ms-2" style="width: 32px"></div>
+</div>

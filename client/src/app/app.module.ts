@@ -7,19 +7,19 @@ import { LoginComponent } from './login/login.component';
 
 // What I've personally imported starts here
 import { FormsModule } from '@angular/forms';
-import { GroupListComponent } from './group/group-list/group-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GroupComponent } from './group/group.component';
 import { ChannelComponent } from './channel/channel.component';
+import { MessageComponent } from './message/message.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    GroupListComponent,
     DashboardComponent,
     GroupComponent,
     ChannelComponent,
+    MessageComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
