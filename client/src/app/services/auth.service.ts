@@ -4,61 +4,85 @@ import { StorageService } from './storage.service';
 import { Role } from '../models/roles';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class AuthService {
-    /** Current user is either of type null or User */
-    private currentUser: User | null = null;
-    /** This is for localStorage so it knows which key to use to access all users */
-    private usersKey = 'users';
+  private currentUser: User | null = null;
+  private usersKey = 'users';
+  private currentUserKey = 'user';
 
-    /** Initializes superuser when it first loads */
-    constructor(private storage: StorageService) {
-        this.seedSuperUser();
+  constructor(private storage: StorageService) {
+    this.seedUsers();
+  }
+
+  private seedUsers(): void {
+    // THIS IS FOR PHASE 1 ONLY - WILL BE DELETED WHEN WE ADD A DATABASE. Or maybe we'll keep it to ensure dummy data is always there, not sure yet...
+
+    let users = this.storage.load<User[]>(this.usersKey) || [];
+    // create a dummy super user
+    if (!users.find((u: User) => u.username === 'super')) {
+      const superUser: User = {
+        id: 1,
+        username: 'super',
+        email: 'super@system.com',
+        password: '123',
+        roles: ['SUPER_ADMIN'],
+        groups: [],
+      };
+      users.push(superUser);
+      this.storage.save(this.usersKey, users);
     }
 
-    /** Seed the initial Super Admin if not present */
-    private seedSuperUser(): void {
-        let users = this.storage.load<User[]>(this.usersKey) || [];
-        if (!users.find((u: User) => u.username === 'super')) {
-            const superUser: User = {
-                id: 1,
-                username: 'super',
-                email: 'super@system.com',
-                password: '123',
-                roles: ['SUPER_ADMIN'],
-                groups: [],
-            };
-            users.push(superUser);
-            this.storage.save(this.usersKey, users);
-        }
-    }
+    // create 2 dummy users
+    if (users.filter((u: User) => u.roles.includes('USER')).length < 2) {
+      const user1: User = {
+        id: 2,
+        username: 'james',
+        email: 'james@system.com',
+        password: '123',
+        roles: ['USER'],
+        groups: [1],
+      };
 
-    /** Attempt login */
-    login(username: string, password: string): boolean {
-        const users = this.storage.load<User[]>(this.usersKey) || [];
-        const found = users.find(
-            (u: User) => u.username === username && u.password === password
-        );
-        if (found) {
-            this.currentUser = found;
-            return true;
-        }
-        return false;
+      const user2: User = {
+        id: 3,
+        username: 'anthony',
+        email: 'anthony@system.com',
+        password: '123',
+        roles: ['USER'],
+        groups: [1],
+      };
+      users.push(user1);
+      users.push(user2);
+      this.storage.save(this.usersKey, users);
     }
+  }
 
-    /** Return current logged in user */
-    getUser(): User | null {
-        return this.currentUser;
+  login(email: string, password: string): boolean {
+    if (!this.currentUser) {
+      const users = this.storage.load<User[]>(this.usersKey) || [];
+      const found = users.find(
+        (u: User) => u.email === email && u.password === password
+      );
+      if (found) {
+        this.currentUser = found;
+        this.storage.save(this.currentUserKey, found);
+        return true;
+      }
     }
+    return false;
+  }
 
-    /** Check role */
-    hasRole(role: Role): boolean {
-        return this.currentUser?.roles.includes(role) || false;
-    }
+  logout(): void {
+    this.storage.remove(this.currentUserKey);
+    this.currentUser = null;
+  }
 
-    /** Logout */
-    logout(): void {
-        this.currentUser = null;
-    }
+  getUser(): User | null {
+    return this.currentUser;
+  }
+
+  hasRole(role: Role): boolean {
+    return this.currentUser?.roles.includes(role) || false;
+  }
 }

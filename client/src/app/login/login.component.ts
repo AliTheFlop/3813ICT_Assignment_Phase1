@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+import { User } from '../models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -8,12 +11,20 @@ import { Component } from '@angular/core';
 export class LoginComponent {
   email: string = '';
   password: string = '';
-  title: string = "Ali's Lovely Login Form";
+  currentUser!: User | null;
+  title: string = 'Log In';
+
+  constructor(private auth: AuthService, private router: Router) {}
 
   onLogin() {
-    console.log('Email: ', this.email);
-    console.log('Password: ', this.password);
-    alert(`Logged in as ${this.email}`);
-    this.title = "This isn't lovely anymore...";
+    this.title = 'Logging in...';
+    const loggedIn = this.auth.login(this.email, this.password);
+    this.currentUser = this.auth.getUser();
+    if (loggedIn) {
+      console.log('Logged in as ' + this.currentUser?.username);
+      this.router.navigate(['/dashboard']);
+    } else {
+      console.log('Login unsuccessful...');
+    }
   }
 }

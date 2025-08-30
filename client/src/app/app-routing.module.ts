@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { GroupComponent } from './group/group.component';
 import { ChannelComponent } from './channel/channel.component';
 import { MessageComponent } from './message/message.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   {
@@ -31,12 +32,12 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/dashboard',
+    component: LoginComponent,
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: '/dashboard',
+    redirectTo: '/',
   },
 ];
 
