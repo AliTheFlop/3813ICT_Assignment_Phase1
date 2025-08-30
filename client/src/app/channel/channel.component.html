@@ -9,10 +9,16 @@
 
   <!-- Messages area -->
   <section class="flex-grow-1 overflow-auto px-3 py-3">
-    <!-- START: your messages loop -->
-    <!-- *ngFor="let msg of messages; trackBy: trackById" -->
-    <!-- Render each message here -->
-    <!-- END: your messages loop -->
+    <div class="container my-3">
+      <div class="d-flex flex-column gap-2">
+        <div class="p-2 rounded bg-light" *ngFor="let msg of messages">
+          <p class="mb-1">{{ msg.content }}</p>
+          <small class="text-muted">
+            by user {{ msg.userId }} • {{ msg.createdAt | date : "short" }}
+          </small>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Composer (sticky at bottom) -->
