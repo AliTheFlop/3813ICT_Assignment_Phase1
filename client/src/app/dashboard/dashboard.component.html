@@ -131,15 +131,24 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group mb-3">
-                                    <label for="email">Email</label>
+                                    <label for="name" class="mb-2"
+                                        >Group Name</label
+                                    >
                                     <input
-                                        type="email"
-                                        id="email"
-                                        [(ngModel)]="newGroupInfo.name"
+                                        type="text"
+                                        id="name"
+                                        [(ngModel)]="newGroupName"
                                         class="form-control"
-                                        placeholder="Enter email"
+                                        placeholder="Enter name"
                                     />
                                 </div>
+
+                                <button
+                                    (click)="newGroup()"
+                                    class="btn btn-primary mt-8"
+                                >
+                                    Submit
+                                </button>
                             </div>
                         </ng-template>
                     </ul>

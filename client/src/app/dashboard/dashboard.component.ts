@@ -20,15 +20,7 @@ export class DashboardComponent implements OnInit {
     currentUserKey = 'user';
     selectedGroup?: Group;
     selectedGroupUsers?: User[];
-    newGroupInfo?: Group = {
-        id: uuidv4(),
-        ownerUserId: '',
-        name: '',
-        adminUserIds: [''],
-        memberUserIds: [''],
-        channelIds: [''],
-        joinRequests: [],
-    };
+    newGroupName?: string;
 
     // modals
     @ViewChild('groupUsersModal') groupUsersModal!: TemplateRef<any>;
@@ -81,18 +73,21 @@ export class DashboardComponent implements OnInit {
     }
 
     openNewGroupModal() {
+        this.newGroupName = '';
         this.modalService.open(this.newGroupModal, { centered: true });
     }
 
     newGroup() {
         const groupInfo = {
-            id: 2,
-            name: 'Engineering',
-            ownerUserId: 1,
-            adminUserIds: [1],
-            memberUserIds: [1],
+            id: uuidv4(),
+            name: this.newGroupName,
+            ownerUserId: this.user?.id,
+            adminUserIds: [this.user?.id],
+            memberUserIds: [this.user?.id],
             channelIds: [],
             joinRequests: [],
         };
+
+        console.log(groupInfo);
     }
 }
