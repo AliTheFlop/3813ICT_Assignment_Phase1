@@ -1,8 +1,8 @@
 export interface Channel {
-    id: number;
+    id: string;
     name: string;
-    groupId: number;
-    members: number[];
+    groupId: string;
+    members: string[];
 }
 
 /*

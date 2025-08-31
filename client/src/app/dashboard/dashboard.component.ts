@@ -22,6 +22,12 @@ export class DashboardComponent implements OnInit {
     selectedGroupUsers?: User[];
     newGroupInfo?: Group = {
         id: uuidv4(),
+        ownerUserId: '',
+        name: '',
+        adminUserIds: [''],
+        memberUserIds: [''],
+        channelIds: [''],
+        joinRequests: [],
     };
 
     // modals

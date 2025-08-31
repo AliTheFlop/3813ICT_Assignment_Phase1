@@ -1,17 +1,17 @@
 export type JoinStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 export interface JoinRequest {
-    userId: number;
+    userId: string;
     status: JoinStatus;
 }
 
 export interface Group {
-    id: number;
+    id: string;
     name: string;
-    ownerUserId: number;
-    adminUserIds: number[];
-    memberUserIds: number[];
-    channelIds: number[];
+    ownerUserId: string;
+    adminUserIds: string[];
+    memberUserIds: string[];
+    channelIds: string[];
     joinRequests: JoinRequest[];
 }
 

@@ -8,7 +8,7 @@ import { ChannelService } from './channels.service';
 })
 export class GroupService {
     groupsKey: string = 'groups';
-    userId?: number;
+    userId?: string;
 
     constructor(
         private storage: StorageService,
@@ -22,29 +22,29 @@ export class GroupService {
         if (!groups || groups.length === 0) {
             const initialGroups: Group[] = [
                 {
-                    id: 1,
+                    id: '1',
                     name: 'General',
-                    ownerUserId: 1,
-                    adminUserIds: [1],
-                    memberUserIds: [1],
+                    ownerUserId: '1',
+                    adminUserIds: ['1'],
+                    memberUserIds: ['1'],
                     channelIds: [],
                     joinRequests: [],
                 },
                 {
-                    id: 2,
+                    id: '2',
                     name: 'Engineering',
-                    ownerUserId: 1,
-                    adminUserIds: [1],
-                    memberUserIds: [1],
+                    ownerUserId: '1',
+                    adminUserIds: ['1'],
+                    memberUserIds: ['1'],
                     channelIds: [],
                     joinRequests: [],
                 },
                 {
-                    id: 3,
+                    id: '3',
                     name: 'Marketing',
-                    ownerUserId: 1,
-                    adminUserIds: [1],
-                    memberUserIds: [1],
+                    ownerUserId: '1',
+                    adminUserIds: ['1'],
+                    memberUserIds: ['1'],
                     channelIds: [],
                     joinRequests: [],
                 },
@@ -70,13 +70,15 @@ export class GroupService {
         return true;
     }
 
-    hasPending(group: Group, userId: number): boolean {
+    hasPending(group: Group, userId: string): boolean {
+        // was number
         return !!group.joinRequests.find(
             (r) => r.userId === userId && r.status === 'PENDING'
         );
     }
 
-    requestToJoin(groupId: number, userId: number) {
+    requestToJoin(groupId: string, userId: string) {
+        // was number
         const groups = this.storage.load<Group[]>('groups') || [];
         const g = groups.find((x) => x.id === groupId);
         if (!g) return;
