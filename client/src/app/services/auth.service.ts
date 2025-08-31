@@ -13,6 +13,7 @@ export class AuthService {
 
   constructor(private storage: StorageService) {
     this.seedUsers();
+    this.getAllUsers();
   }
 
   private seedUsers(): void {
@@ -80,6 +81,17 @@ export class AuthService {
 
   getUser(): User | null {
     return this.currentUser;
+  }
+
+  getAllUsers(groupId: number | null = null) {
+    const users: User[] | null = this.storage.load(this.usersKey);
+    console.log(users);
+    if (!groupId) {
+      return users;
+    } else {
+      const filteredUsers = users?.filter((u) => u.groups.includes(groupId));
+      return filteredUsers;
+    }
   }
 
   hasRole(role: Role): boolean {

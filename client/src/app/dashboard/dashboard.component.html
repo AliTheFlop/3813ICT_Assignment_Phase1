@@ -40,16 +40,66 @@
             </div>
           </div>
           <ul class="list-group list-group-flush small">
-            <li class="list-group-item px-3 py-2" *ngFor="let group of groups">
+            <li
+              class="list-group-item px-3 py-2 d-flex align-items-center"
+              *ngFor="let group of groups"
+            >
               <a
-                class="d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
+                class="flex-grow-1 d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
                 [routerLink]="['/dashboard', 'group', group.id]"
                 routerLinkActive="active"
               >
                 <i class="bi bi-collection-play"></i>
                 <span class="text-truncate">{{ group.name }}</span>
               </a>
+
+              <button
+                type="button"
+                class="btn btn-link text-decoration-none p-0"
+                (click)="openGroupModal(group); $event.stopPropagation()"
+              >
+                <i class="bi bi-three-dots"></i>
+              </button>
             </li>
+
+            <ng-template #groupUsersModal let-modal>
+              <div class="modal-header">
+                <h5 class="modal-title">{{ selectedGroup?.name }} members</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  aria-label="Close"
+                  (click)="modal.dismiss()"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <h6>Users</h6>
+                <ul *ngIf="selectedGroupUsers?.length; else noUsers">
+                  <li *ngFor="let user of selectedGroupUsers">
+                    {{ user.username }} ({{ user.email }})
+                  </li>
+                </ul>
+                <ng-template #noUsers>
+                  <p>No users in this group.</p>
+                </ng-template>
+
+                <h6>Pending invites</h6>
+                <ul>
+                  <li *ngFor="let invite of selectedGroup?.joinRequests">
+                    This one has joined
+                  </li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  (click)="modal.close()"
+                >
+                  Close
+                </button>
+              </div>
+            </ng-template>
           </ul>
         </div>
       </div>
