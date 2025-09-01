@@ -43,12 +43,15 @@
                                 <div class="col-auto">
                                     <button
                                         *ngIf="
-                                            user?.roles?.includes('SUPER_ADMIN')
+                                            user?.roles?.includes(
+                                                'SUPER_ADMIN'
+                                            ) ||
+                                            user?.roles?.includes('GROUP_ADMIN')
                                         "
                                         class="btn btn-primary btn-sm"
                                         (click)="openNewGroupModal()"
                                     >
-                                        <i class="bi bi-plus-lg"></i> New Group
+                                        <i class="bi bi-plus-lg"></i>
                                     </button>
                                 </div>
                             </div>
@@ -128,7 +131,11 @@
                                     class="btn btn-danger"
                                     *ngIf="
                                         selectedGroup &&
-                                        (user?.roles?.includes('GROUP_ADMIN') ||
+                                        ((user?.roles?.includes(
+                                            'GROUP_ADMIN'
+                                        ) &&
+                                            user?.id ===
+                                                selectedGroup.ownerUserId) ||
                                             user?.roles?.includes(
                                                 'SUPER_ADMIN'
                                             ))

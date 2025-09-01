@@ -69,6 +69,11 @@ export class GroupService {
         return groups ? groups : [];
     }
 
+    getSingleGroup(groupId: string): Group | undefined {
+        const groups = this.getGroups();
+        return groups.find((g) => groupId === g.id);
+    }
+
     newGroup(group: Group) {
         if (!this.allGroups) {
             this.allGroups = [];

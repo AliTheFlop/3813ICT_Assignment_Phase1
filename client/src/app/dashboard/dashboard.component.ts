@@ -39,10 +39,8 @@ export class DashboardComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        const currentUser = this.storage.load(
-            this.currentUserKey
-        ) as User | null;
-        console.log(currentUser);
+        const currentUser = this.auth.getUser();
+
         if (!currentUser) {
             this.router.navigate(['/']);
             return;
