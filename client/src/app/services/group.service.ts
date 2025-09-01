@@ -9,6 +9,7 @@ import { ChannelService } from './channels.service';
 export class GroupService {
     groupsKey: string = 'groups';
     userId?: string;
+    allGroups?: Group[];
 
     constructor(
         private storage: StorageService,
@@ -58,6 +59,8 @@ export class GroupService {
             });
 
             this.storage.save(this.groupsKey, initialGroups);
+        } else {
+            this.allGroups = groups;
         }
     }
 
@@ -66,11 +69,23 @@ export class GroupService {
         return groups ? groups : [];
     }
 
-    newGroup(): boolean {
-        return true;
+    newGroup(group: Group) {
+        if (!this.allGroups) {
+            this.allGroups = [];
+        }
+
+        this.allGroups.push(group);
+        this.storage.save(this.groupsKey, this.allGroups);
     }
 
-    hasPending(group: Group, userId: string): boolean {
+    deleteGroup(group: Group) {
+        if (this.allGroups) {
+            this.allGroups = this.allGroups.filter((g) => g.id !== group.id);
+            this.storage.save(this.groupsKey, this.allGroups);
+        }
+    }
+
+    hasPending(group: Group, userId: string) {
         // was number
         return !!group.joinRequests.find(
             (r) => r.userId === userId && r.status === 'PENDING'
