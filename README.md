@@ -51,3 +51,12 @@ Group specific:
 4. Created a messages component and populated channels using dummy messages.
 5. Implemented a proper authentication system where the user cannot access /dashboard without being logged in. Also added a dummy super user & two dummy users.
 6. Added a "create group" button that allows the super user to create new groups. The button uses \*ngIf to only display if the user is the super user.
+
+## 31st August
+
+1. Added the create group modal where you input the name and it automatically generated the new Group object. Next step on this front is to add it to the local storage.
+2. Used UUIDs to create unique IDs for everything. I didn't have this in the first time SO by changing half of our model id's into strings and not numbers, I had to refactor a lot of the codebase.
+
+## 1st September
+
+1. Added a user-list component to show ALL the users that are available. Also created the promote & demote functions to promote / demote a user

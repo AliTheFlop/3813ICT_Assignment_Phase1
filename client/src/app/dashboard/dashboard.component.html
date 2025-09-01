@@ -1,196 +1,186 @@
 <div class="container-fluid py-3">
-    <!-- Top bar -->
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 *ngIf="user" class="h4 mb-0 fw-semibold">
-            Welcome Back, {{ user?.username }}
-        </h2>
-        <button
-            class="btn btn-outline-secondary btn-sm d-md-none"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#groupsOffcanvas"
-        >
-            <i class="bi bi-people"></i> Groups
-        </button>
-        <button class="btn btn-outline-danger btn-sm" (click)="logout()">
-            <i class="bi bi-box-arrow-right"></i> Logout
-        </button>
+  <!-- Top bar -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 *ngIf="user" class="h4 mb-0 fw-semibold">
+      Welcome Back, {{ user?.username }}
+    </h2>
+    <button
+      class="btn btn-outline-secondary btn-sm d-md-none"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#groupsOffcanvas"
+    >
+      <i class="bi bi-people"></i> Groups
+    </button>
+    <div class="">
+      <button
+        class="btn btn-outline-secondary btn-sm m-2"
+        (click)="openUserListModal()"
+      >
+        <i class="bi bi-box-arrow-right"></i> All Users
+      </button>
+
+      <button class="btn btn-outline-danger btn-sm" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </button>
     </div>
+  </div>
 
-    <div class="row g-3">
-        <!-- Sidebar: Groups (desktop) -->
-        <aside class="col-md-3 col-lg-2 d-none d-md-block">
-            <div class="card shadow-sm border-0 sticky-top">
-                <div class="card-body p-0">
-                    <div class="px-3 py-2 border-bottom">
-                        <div>
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <h3
-                                        class="h6 text-uppercase text-muted mb-0"
-                                    >
-                                        Groups
-                                    </h3>
-                                </div>
-                                <div class="col-auto">
-                                    <button
-                                        *ngIf="
-                                            user?.roles?.includes('SUPER_ADMIN')
-                                        "
-                                        class="btn btn-primary btn-sm"
-                                        (click)="openNewGroupModal()"
-                                    >
-                                        <i class="bi bi-plus-lg"></i> New Group
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <ul class="list-group list-group-flush small">
-                        <li
-                            class="list-group-item px-3 py-2 d-flex align-items-center"
-                            *ngFor="let group of groups"
-                        >
-                            <a
-                                class="flex-grow-1 d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
-                                [routerLink]="['/dashboard', 'group', group.id]"
-                                routerLinkActive="active"
-                            >
-                                <i class="bi bi-collection-play"></i>
-                                <span class="text-truncate">{{
-                                    group.name
-                                }}</span>
-                            </a>
-
-                            <button
-                                type="button"
-                                class="btn btn-link text-decoration-none p-0"
-                                (click)="
-                                    openGroupModal(group);
-                                    $event.stopPropagation()
-                                "
-                            >
-                                <i class="bi bi-three-dots"></i>
-                            </button>
-                        </li>
-
-                        <!-- Group Info Modal - shows users & pending invites. -->
-                        <ng-template #groupUsersModal let-modal>
-                            <div class="modal-header">
-                                <h5 class="modal-title">
-                                    {{ selectedGroup?.name }} members
-                                </h5>
-                                <button
-                                    type="button"
-                                    class="btn-close"
-                                    aria-label="Close"
-                                    (click)="modal.dismiss()"
-                                ></button>
-                            </div>
-                            <div class="modal-body">
-                                <h6>Users</h6>
-                                <ul
-                                    *ngIf="
-                                        selectedGroupUsers?.length;
-                                        else noUsers
-                                    "
-                                >
-                                    <li *ngFor="let user of selectedGroupUsers">
-                                        {{ user.username }} ({{ user.email }})
-                                    </li>
-                                </ul>
-                                <ng-template #noUsers>
-                                    <p>No users in this group.</p>
-                                </ng-template>
-
-                                <h6>Pending invites</h6>
-                                <ul>
-                                    <li
-                                        *ngFor="
-                                            let invite of selectedGroup?.joinRequests
-                                        "
-                                    >
-                                        This one has joined
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="modal-footer">
-                                <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    (click)="modal.close()"
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        </ng-template>
-
-                        <!-- New Group Modal -->
-                        <ng-template #newGroupModal let-modal>
-                            <div class="modal-header">
-                                <h5 class="modal-title">Create New Group</h5>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group mb-3">
-                                    <label for="name" class="mb-2"
-                                        >Group Name</label
-                                    >
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        [(ngModel)]="newGroupName"
-                                        class="form-control"
-                                        placeholder="Enter name"
-                                    />
-                                </div>
-
-                                <button
-                                    (click)="newGroup()"
-                                    class="btn btn-primary mt-8"
-                                >
-                                    Submit
-                                </button>
-                            </div>
-                        </ng-template>
-                    </ul>
+  <div class="row g-3">
+    <!-- Sidebar: Groups (desktop) -->
+    <aside class="col-md-3 col-lg-2 d-none d-md-block">
+      <div class="card shadow-sm border-0 sticky-top">
+        <div class="card-body p-0">
+          <div class="px-3 py-2 border-bottom">
+            <div>
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="h6 text-uppercase text-muted mb-0">Groups</h3>
                 </div>
-            </div>
-        </aside>
-
-        <!-- Main -->
-        <main class="col-12 col-md-9 col-lg-10">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-0">
-                    <router-outlet></router-outlet>
+                <div class="col-auto">
+                  <button
+                    *ngIf="user?.roles?.includes('SUPER_ADMIN')"
+                    class="btn btn-primary btn-sm"
+                    (click)="openNewGroupModal()"
+                  >
+                    <i class="bi bi-plus-lg"></i> New Group
+                  </button>
                 </div>
+              </div>
             </div>
-        </main>
-    </div>
+          </div>
+          <ul class="list-group list-group-flush small">
+            <li
+              class="list-group-item px-3 py-2 d-flex align-items-center"
+              *ngFor="let group of groups"
+            >
+              <a
+                class="flex-grow-1 d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
+                [routerLink]="['/dashboard', 'group', group.id]"
+                routerLinkActive="active"
+              >
+                <i class="bi bi-collection-play"></i>
+                <span class="text-truncate">{{ group.name }}</span>
+              </a>
+
+              <button
+                type="button"
+                class="btn btn-link text-decoration-none p-0"
+                (click)="openGroupModal(group); $event.stopPropagation()"
+              >
+                <i class="bi bi-three-dots"></i>
+              </button>
+            </li>
+
+            <!-- Group Info Modal - shows users & pending invites. -->
+            <ng-template #groupUsersModal let-modal>
+              <div class="modal-header">
+                <h5 class="modal-title">{{ selectedGroup?.name }} members</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  aria-label="Close"
+                  (click)="modal.dismiss()"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <h6>Users</h6>
+                <ul *ngIf="selectedGroupUsers?.length; else noUsers">
+                  <li *ngFor="let user of selectedGroupUsers">
+                    {{ user.username }} ({{ user.email }})
+                  </li>
+                </ul>
+                <ng-template #noUsers>
+                  <p>No users in this group.</p>
+                </ng-template>
+
+                <h6>Pending invites</h6>
+                <ul>
+                  <li *ngFor="let invite of selectedGroup?.joinRequests">
+                    This one has joined
+                  </li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  (click)="modal.close()"
+                >
+                  Close
+                </button>
+              </div>
+            </ng-template>
+
+            <!-- New Group Modal -->
+            <ng-template #newGroupModal let-modal>
+              <div class="modal-header">
+                <h5 class="modal-title">Create New Group</h5>
+              </div>
+              <div class="modal-body">
+                <div class="form-group mb-3">
+                  <label for="name" class="mb-2">Group Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    [(ngModel)]="newGroupName"
+                    class="form-control"
+                    placeholder="Enter name"
+                  />
+                </div>
+
+                <button (click)="newGroup()" class="btn btn-primary mt-8">
+                  Submit
+                </button>
+              </div>
+            </ng-template>
+
+            <!-- User List Modal -->
+            <ng-template #userListModal let-modal>
+              <div class="modal-header">
+                <h5>All Users</h5>
+              </div>
+              <app-user-list />
+            </ng-template>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="col-12 col-md-9 col-lg-10">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </main>
+  </div>
 </div>
 
 <!-- Offcanvas: Groups (mobile) -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="groupsOffcanvas">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Groups</h5>
-        <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-        ></button>
-    </div>
-    <div class="offcanvas-body p-0">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item" *ngFor="let group of groups">
-                <a
-                    class="d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
-                    [routerLink]="['/dashboard', 'group', group.id]"
-                    routerLinkActive="active"
-                    data-bs-dismiss="offcanvas"
-                >
-                    <i class="bi bi-collection-play"></i>
-                    <span class="text-truncate">{{ group.name }}</span>
-                </a>
-            </li>
-        </ul>
-    </div>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Groups</h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item" *ngFor="let group of groups">
+        <a
+          class="d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
+          [routerLink]="['/dashboard', 'group', group.id]"
+          routerLinkActive="active"
+          data-bs-dismiss="offcanvas"
+        >
+          <i class="bi bi-collection-play"></i>
+          <span class="text-truncate">{{ group.name }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>

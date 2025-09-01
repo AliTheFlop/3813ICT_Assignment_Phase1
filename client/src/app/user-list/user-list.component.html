@@ -1,0 +1,69 @@
+<div class="modal-body">
+  <ul *ngIf="allUsers?.length; else noUsers" class="list-group">
+    <li
+      *ngFor="let user of allUsers"
+      class="list-group-item d-flex justify-content-between align-items-center"
+      [ngClass]="{ 'list-group-item-primary': user.id === currentUser?.id }"
+    >
+      <div>
+        <strong>
+          {{ user.username }}
+          <span
+            *ngIf="user.id === currentUser?.id"
+            class="badge bg-primary ms-2"
+          >
+            You
+          </span>
+        </strong>
+        <br />
+        <small class="text-muted">{{ user.email }}</small>
+        <br />
+
+        <!-- Roles display -->
+        <ng-container *ngFor="let role of user.roles">
+          <span
+            class="badge me-1"
+            [ngClass]="{
+              'bg-danger': role === 'SUPER_ADMIN',
+              'bg-warning text-dark': role === 'GROUP_ADMIN',
+              'bg-secondary': role === 'USER'
+            }"
+          >
+            {{ role }}
+          </span>
+        </ng-container>
+      </div>
+
+      <!-- Only visible if the CURRENT viewer is a SUPER_ADMIN -->
+      <div
+        *ngIf="
+          currentUser?.roles?.includes('SUPER_ADMIN') &&
+          user.id !== currentUser?.id
+        "
+        class="btn-group btn-group-sm"
+        role="group"
+      >
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="promoteUser(user)"
+          [disabled]="user.roles.includes('SUPER_ADMIN')"
+        >
+          Promote
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="demoteUser(user)"
+          [disabled]="user.roles.length === 1 && user.roles.includes('USER')"
+        >
+          Demote
+        </button>
+      </div>
+    </li>
+  </ul>
+
+  <ng-template #noUsers>
+    <p class="text-muted text-center">No users in this group.</p>
+  </ng-template>
+</div>
