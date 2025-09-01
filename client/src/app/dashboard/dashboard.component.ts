@@ -68,8 +68,6 @@ export class DashboardComponent implements OnInit {
         const groupUsers = allUsers?.filter((u) =>
             group.memberUserIds.includes(u.id)
         );
-        console.log('Group ' + group.name + ' has these users: ');
-        console.log(groupUsers);
 
         this.selectedGroupUsers = groupUsers;
     }
