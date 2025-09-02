@@ -82,6 +82,7 @@ Frequent commits during development days to track features and bug fixes.
 -   **message.service** – message storage and retrieval.
 -   **storage.service** – wrapper around localStorage.
 -   **dummy-data.service** – (if used) seeds default data for testing.
+-   **user.service** - user storage and retrieval.
 
 ## Models
 

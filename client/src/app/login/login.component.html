@@ -24,6 +24,10 @@
             />
         </div>
 
+        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+        </div>
+
         <button (click)="onLogin()" class="btn btn-primary w-100">Login</button>
         <div class="text-center mt-3">
             <a routerLink="/register">Create an account</a>

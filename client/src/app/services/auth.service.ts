@@ -76,10 +76,17 @@ export class AuthService {
         return false;
     }
 
-    register(username: string, email: string, password: string): boolean {
+    register(
+        username: string,
+        email: string,
+        password: string
+    ): { success: boolean; message?: string } {
         const users = this.storage.load<User[]>(this.usersKey) || [];
         if (users.find((u) => u.email === email)) {
-            return false; // email already in use
+            return { success: false, message: 'Email already in use' };
+        }
+        if (users.find((u) => u.username === username)) {
+            return { success: false, message: 'Username already in use' };
         }
         const newUser: User = {
             id: Date.now().toString(),
@@ -93,7 +100,7 @@ export class AuthService {
         this.storage.save(this.usersKey, users);
         this.currentUser = newUser;
         this.storage.save(this.currentUserKey, newUser);
-        return true;
+        return { success: true };
     }
 
     logout(): void {

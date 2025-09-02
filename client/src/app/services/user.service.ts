@@ -23,6 +23,14 @@ export class UserService {
         this.storage.save(this.usersKey, users);
     }
 
+    createUser(username: string, email: string, password: string) {
+        const success = this.auth.register(username, email, password);
+        if (success) {
+            this.getAllUsers();
+        }
+        return success;
+    }
+
     updateUser(updatedUser: User) {
         if (this.allUsers) {
             const index = this.allUsers.findIndex(

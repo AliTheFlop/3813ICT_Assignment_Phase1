@@ -11,14 +11,20 @@ export class RegisterComponent {
     username = '';
     email = '';
     password = '';
+    errorMessage = '';
 
     constructor(private auth: AuthService, private router: Router) {}
 
     onRegister() {
-        if (this.auth.register(this.username, this.email, this.password)) {
+        const result = this.auth.register(
+            this.username,
+            this.email,
+            this.password
+        );
+        if (result.success) {
             this.router.navigate(['/dashboard']);
         } else {
-            console.log('Registration failed');
+            this.errorMessage = result.message || 'Registration failed';
         }
     }
 }

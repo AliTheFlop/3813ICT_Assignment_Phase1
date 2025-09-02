@@ -33,6 +33,9 @@
                 placeholder="Enter password"
             />
         </div>
+        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+        </div>
 
         <button (click)="onRegister()" class="btn btn-primary w-100">
             Register
