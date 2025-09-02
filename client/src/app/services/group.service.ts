@@ -2,115 +2,128 @@ import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
 import { Group } from '../models/group.model';
 import { ChannelService } from './channels.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class GroupService {
-    groupsKey: string = 'groups';
-    userId?: string;
-    allGroups?: Group[];
+  groupsKey: string = 'groups';
+  userId?: string;
+  allGroups?: Group[] | null;
 
-    constructor(
-        private storage: StorageService,
-        private channelService: ChannelService
-    ) {
-        this.seedInitialGroups();
+  constructor(
+    private storage: StorageService,
+    private channelService: ChannelService
+  ) {
+    this.seedInitialGroups();
+  }
+
+  private seedInitialGroups(): void {
+    const groups = this.storage.load<Group[]>(this.groupsKey);
+
+    this.allGroups = groups;
+  }
+
+  getGroups(): Group[] {
+    const groups = this.storage.load<Group[]>(this.groupsKey);
+    return groups ? groups : [];
+  }
+
+  getSingleGroup(groupId: string): Group | undefined {
+    const groups = this.getGroups();
+    return groups.find((g) => groupId === g.id);
+  }
+
+  newGroup(group: Group) {
+    if (!this.allGroups) {
+      this.allGroups = [];
     }
 
-    private seedInitialGroups(): void {
-        const groups = this.storage.load<Group[]>(this.groupsKey);
-        if (!groups || groups.length === 0) {
-            const initialGroups: Group[] = [
-                {
-                    id: '1',
-                    name: 'General',
-                    ownerUserId: '1',
-                    adminUserIds: ['1'],
-                    memberUserIds: ['1'],
-                    channelIds: [],
-                    joinRequests: [],
-                },
-                {
-                    id: '2',
-                    name: 'Engineering',
-                    ownerUserId: '1',
-                    adminUserIds: ['1'],
-                    memberUserIds: ['1'],
-                    channelIds: [],
-                    joinRequests: [],
-                },
-                {
-                    id: '3',
-                    name: 'Marketing',
-                    ownerUserId: '1',
-                    adminUserIds: ['1'],
-                    memberUserIds: ['1'],
-                    channelIds: [],
-                    joinRequests: [],
-                },
-            ];
+    this.allGroups.push(group);
+    this.storage.save(this.groupsKey, this.allGroups);
+  }
 
-            const allChannels = this.channelService.getChannels();
-            initialGroups.forEach((group) => {
-                group.channelIds = allChannels
-                    .filter((c) => c.groupId === group.id)
-                    .map((c) => c.id);
-            });
+  deleteGroup(group: Group) {
+    if (this.allGroups) {
+      this.allGroups = this.allGroups.filter((g) => g.id !== group.id);
+      this.storage.save(this.groupsKey, this.allGroups);
+    }
+  }
 
-            this.storage.save(this.groupsKey, initialGroups);
-        } else {
-            this.allGroups = groups;
-        }
+  hasPending(group: Group, userId: string) {
+    // was number
+    return !!group.joinRequests.find(
+      (r) => r.userId === userId && r.status === 'PENDING'
+    );
+  }
+
+  requestToJoin(groupId: string, userId: string) {
+    // was number
+    const groups = this.storage.load<Group[]>('groups') || [];
+    const g = groups.find((x) => x.id === groupId);
+    if (!g) {
+      return;
     }
 
-    getGroups(): Group[] {
-        const groups = this.storage.load<Group[]>(this.groupsKey);
-        return groups ? groups : [];
+    const alreadyMember = g.memberUserIds.includes(userId);
+    const alreadyPending = g.joinRequests.some(
+      (r) => r.userId && r.status === 'PENDING'
+    );
+
+    if (!alreadyMember && !alreadyPending) {
+      g.joinRequests.push({ userId, status: 'PENDING' });
+      this.storage.save('groups', groups);
+    } else {
+      console.log('Already a member of this group!');
+    }
+  }
+
+  approveJoinRequest(groupId: string, userId: string) {
+    console.log('Group!');
+    const groups = this.storage.load<Group[]>(this.groupsKey) || [];
+    const g = groups.find((x) => (x.id = groupId));
+    if (!g) {
+      console.log('No group!');
+      console.log(g);
+      return;
     }
 
-    getSingleGroup(groupId: string): Group | undefined {
-        const groups = this.getGroups();
-        return groups.find((g) => groupId === g.id);
+    console.log('Checking request!');
+    const req = g.joinRequests.find(
+      (r) => r.userId === userId && r.status === 'PENDING'
+    );
+    if (!req) {
+      console.log('No request!');
+      console.log(req);
+      console.log(g.joinRequests);
+      return;
     }
 
-    newGroup(group: Group) {
-        if (!this.allGroups) {
-            this.allGroups = [];
-        }
+    console.log('Request has been approved!');
+    req.status = 'APPROVED';
 
-        this.allGroups.push(group);
-        this.storage.save(this.groupsKey, this.allGroups);
+    if (!g.memberUserIds.includes(userId)) {
+      g.memberUserIds.push(userId);
+    }
+    this.storage.save(this.groupsKey, groups);
+  }
+
+  rejectJoinRequest(groupId: string, userId: string) {
+    const groups = this.storage.load<Group[]>(this.groupsKey) || [];
+    const g = groups.find((x) => x.id === groupId);
+    if (!g) {
+      return;
     }
 
-    deleteGroup(group: Group) {
-        if (this.allGroups) {
-            this.allGroups = this.allGroups.filter((g) => g.id !== group.id);
-            this.storage.save(this.groupsKey, this.allGroups);
-        }
+    const req = g.joinRequests.find(
+      (r) => r.userId === userId && r.status === 'PENDING'
+    );
+    if (!req) {
+      return;
     }
 
-    hasPending(group: Group, userId: string) {
-        // was number
-        return !!group.joinRequests.find(
-            (r) => r.userId === userId && r.status === 'PENDING'
-        );
-    }
-
-    requestToJoin(groupId: string, userId: string) {
-        // was number
-        const groups = this.storage.load<Group[]>('groups') || [];
-        const g = groups.find((x) => x.id === groupId);
-        if (!g) return;
-
-        const alreadyMember = g.memberUserIds.includes(userId);
-        const alreadyPending = g.joinRequests.some(
-            (r) => r.userId && r.status === 'PENDING'
-        );
-
-        if (!alreadyMember && !alreadyPending) {
-            g.joinRequests.push({ userId, status: 'PENDING' });
-            this.storage.save('groups', groups);
-        }
-    }
+    req.status = 'REJECTED';
+    this.storage.save(this.groupsKey, groups);
+  }
 }
