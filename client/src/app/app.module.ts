@@ -12,6 +12,7 @@ import { GroupComponent } from './group/group.component';
 import { ChannelComponent } from './channel/channel.component';
 import { MessageComponent } from './message/message.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { UserListComponent } from './user-list/user-list.component';
     ChannelComponent,
     MessageComponent,
     UserListComponent,
+    RegisterComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],

@@ -76,6 +76,26 @@ export class AuthService {
         return false;
     }
 
+    register(username: string, email: string, password: string): boolean {
+        const users = this.storage.load<User[]>(this.usersKey) || [];
+        if (users.find((u) => u.email === email)) {
+            return false; // email already in use
+        }
+        const newUser: User = {
+            id: Date.now().toString(),
+            username,
+            email,
+            password,
+            roles: ['USER'],
+            groups: [],
+        };
+        users.push(newUser);
+        this.storage.save(this.usersKey, users);
+        this.currentUser = newUser;
+        this.storage.save(this.currentUserKey, newUser);
+        return true;
+    }
+
     logout(): void {
         this.storage.remove(this.currentUserKey);
         this.currentUser = null;
