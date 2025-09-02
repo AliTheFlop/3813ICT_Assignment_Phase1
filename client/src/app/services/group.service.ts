@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
 import { Group } from '../models/group.model';
 import { ChannelService } from './channels.service';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -68,7 +67,7 @@ export class GroupService {
 
     const alreadyMember = g.memberUserIds.includes(userId);
     const alreadyPending = g.joinRequests.some(
-      (r) => r.userId && r.status === 'PENDING'
+      (r) => r.userId === userId && r.status === 'PENDING'
     );
 
     if (!alreadyMember && !alreadyPending) {
@@ -80,27 +79,19 @@ export class GroupService {
   }
 
   approveJoinRequest(groupId: string, userId: string) {
-    console.log('Group!');
     const groups = this.storage.load<Group[]>(this.groupsKey) || [];
-    const g = groups.find((x) => (x.id = groupId));
+    const g = groups.find((x) => x.id === groupId);
     if (!g) {
-      console.log('No group!');
-      console.log(g);
       return;
     }
 
-    console.log('Checking request!');
     const req = g.joinRequests.find(
       (r) => r.userId === userId && r.status === 'PENDING'
     );
     if (!req) {
-      console.log('No request!');
-      console.log(req);
-      console.log(g.joinRequests);
       return;
     }
 
-    console.log('Request has been approved!');
     req.status = 'APPROVED';
 
     if (!g.memberUserIds.includes(userId)) {
