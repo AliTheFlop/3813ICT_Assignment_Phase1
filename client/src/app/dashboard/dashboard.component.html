@@ -56,14 +56,29 @@
               class="list-group-item px-3 py-2 d-flex align-items-center"
               *ngFor="let group of groups"
             >
-              <a
-                class="flex-grow-1 d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
-                [routerLink]="['/dashboard', 'group', group.id]"
-                routerLinkActive="active"
+              <ng-container
+                *ngIf="
+                  user && group.memberUserIds.includes(user.id);
+                  else lockedGroup
+                "
               >
-                <i class="bi bi-collection-play"></i>
-                <span class="text-truncate">{{ group.name }}</span>
-              </a>
+                <a
+                  class="flex-grow-1 d-flex align-items-center gap-2 text-decoration-none link-body-emphasis"
+                  [routerLink]="['/dashboard', 'group', group.id]"
+                  routerLinkActive="active"
+                >
+                  <i class="bi bi-collection-play"></i>
+                  <span class="text-truncate">{{ group.name }}</span>
+                </a>
+              </ng-container>
+              <ng-template #lockedGroup>
+                <span
+                  class="flex-grow-1 d-flex align-items-center gap-2 text-muted"
+                >
+                  <i class="bi bi-collection-play"></i>
+                  <span class="text-truncate">{{ group.name }}</span>
+                </span>
+              </ng-template>
 
               <!-- Join button / pending badge -->
               <button

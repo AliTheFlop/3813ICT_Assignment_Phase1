@@ -1,7 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Group } from '../models/group.model';
 import { GroupService } from '../services/group.service';
-import { StorageService } from '../services/storage.service';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
@@ -29,6 +28,7 @@ export class DashboardComponent implements OnInit {
   @ViewChild('newGroupModal') newGroupModal!: TemplateRef<any>;
   @ViewChild('userListModal') userListModal!: TemplateRef<any>;
 
+  // Initial variables...
   constructor(
     private groupService: GroupService,
     private router: Router,
@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit {
     private userService: UserService
   ) {}
 
+  // Check if there's a user on load & if there is, get groups.
   ngOnInit(): void {
     const currentUser = this.auth.getUser();
     console.log('CURRENT USER: ');
